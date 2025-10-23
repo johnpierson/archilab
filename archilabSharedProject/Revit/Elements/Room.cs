@@ -1,8 +1,6 @@
 ﻿using archilab.Revit.Utils;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
-using Autodesk.Revit.DB.Architecture;
-using DocumentFormat.OpenXml.Wordprocessing;
 using DynamoServices;
 using Revit.Elements;
 using Revit.GeometryConversion;
@@ -11,7 +9,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.Revit.DB.Structure;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Element = Revit.Elements.Element;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -28,6 +25,76 @@ namespace archilab.Revit.Elements
     {
         internal Room()
         {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public static double SignedDistanceTo(Plane plane, Point point)
+        {
+            var v = point.ToRevitType() - plane.ToPlane().Origin;
+            return plane.ToPlane().Normal.DotProduct(v);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public static double AbsoluteDistanceTo(Plane plane, Point point)
+        {
+            var o = plane.ToPlane().Origin;
+            var n = plane.ToPlane().Normal;
+            var v = point.ToRevitType() - o;
+            var d = Math.Abs(v.DotProduct(n));
+            return d;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static Plane GetPlaneFromCurve(Curve curve, double height)
+        {
+            var bottomCurve = curve.ToRevitType();
+            var upperCurve = bottomCurve.Offset(height);
+            var surface = Autodesk.Revit.DB.RuledSurface.Create(bottomCurve, upperCurve);
+            if (surface is Autodesk.Revit.DB.Plane plane)
+            {
+                return plane.ToPlane();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="panel"></param>
+        /// <returns></returns>
+        public static IEnumerable<Point> GetLocations(Element panel)
+        {
+            var points = new List<Point>();
+            var internalElement = panel.InternalElement;
+            var bb = internalElement.get_BoundingBox(null);
+
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Min.X, bb.Min.Y, bb.Min.Z).ToPoint());
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Max.X, bb.Min.Y, bb.Min.Z).ToPoint());
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Min.X, bb.Max.Y, bb.Min.Z).ToPoint());
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Max.X, bb.Max.Y, bb.Min.Z).ToPoint());
+
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Min.X, bb.Min.Y, bb.Max.Z).ToPoint());
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Max.X, bb.Min.Y, bb.Max.Z).ToPoint());
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Min.X, bb.Max.Y, bb.Max.Z).ToPoint());
+            points.Add(new Autodesk.Revit.DB.XYZ(bb.Max.X, bb.Max.Y, bb.Max.Z).ToPoint());
+
+            return points;
         }
 
         /// <summary>
@@ -750,6 +817,19 @@ namespace archilab.Revit.Elements
                     var l = faceLines[j];
                     pts.Add(new EdgePoint(l.Line.GetEndPoint(0), l.FaceId, l.EdgeId, 0));
                     pts.Add(new EdgePoint(l.Line.GetEndPoint(1), l.FaceId, l.EdgeId, 1));
+
+                    if (l.Line.Length > 1)
+                    {
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.1, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.2, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.3, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.4, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.5, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.6, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.7, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.8, true), l.FaceId, l.EdgeId, 3));
+                        pts.Add(new EdgePoint(l.Line.Evaluate(0.9, true), l.FaceId, l.EdgeId, 3));
+                    }
                 }
             }
 
@@ -808,13 +888,21 @@ namespace archilab.Revit.Elements
             return ptsOnFace.Any();
         }
 
-        private static IEnumerable<Autodesk.Revit.DB.Line> PlanarizeArc(Autodesk.Revit.DB.Arc arc, double shortCurveTolerance)
+        private static IEnumerable<Autodesk.Revit.DB.Line> PlanarizeArc(
+            Autodesk.Revit.DB.Arc arc, 
+            double shortCurveTolerance)
         {
             var b1 = arc.Evaluate(0, true);
-            var b2 = arc.Evaluate(0.25, true);
-            var b3 = arc.Evaluate(0.5, true);
-            var b4 = arc.Evaluate(0.75, true);
-            var b5 = arc.Evaluate(1, true);
+            var b2 = arc.Evaluate(0.1, true);
+            var b3 = arc.Evaluate(0.2, true);
+            var b4 = arc.Evaluate(0.3, true);
+            var b5 = arc.Evaluate(0.4, true);
+            var b6 = arc.Evaluate(0.5, true);
+            var b7 = arc.Evaluate(0.6, true);
+            var b8 = arc.Evaluate(0.7, true);
+            var b9 = arc.Evaluate(0.8, true);
+            var b10 = arc.Evaluate(0.9, true);
+            var b11 = arc.Evaluate(1, true);
 
             // (Konrad) It's possible that an Arc length is > shortCurveTolerance but when it's
             // planarized it's line components are not. If that's the case, return a single line
@@ -838,7 +926,13 @@ namespace archilab.Revit.Elements
                 Autodesk.Revit.DB.Line.CreateBound(b1, b2),
                 Autodesk.Revit.DB.Line.CreateBound(b2, b3),
                 Autodesk.Revit.DB.Line.CreateBound(b3, b4),
-                Autodesk.Revit.DB.Line.CreateBound(b4, b5)
+                Autodesk.Revit.DB.Line.CreateBound(b4, b5),
+                Autodesk.Revit.DB.Line.CreateBound(b5, b6),
+                Autodesk.Revit.DB.Line.CreateBound(b6, b7),
+                Autodesk.Revit.DB.Line.CreateBound(b7, b8),
+                Autodesk.Revit.DB.Line.CreateBound(b8, b9),
+                Autodesk.Revit.DB.Line.CreateBound(b9, b10),
+                Autodesk.Revit.DB.Line.CreateBound(b10, b11)
             };
         }
 
