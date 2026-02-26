@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
 using RevitServices.Persistence;
+using archilab.Revit.Utils;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedMember.Local
 
@@ -72,7 +73,7 @@ namespace archilab.Revit.Elements
                 if (e == null)
                     continue;
 
-                var we = new WarningElement {Id = id.IntegerValue};
+                var we = new WarningElement {Id = id.GetIdValue()};
                 warningElements.Add(we);
             }
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -87,6 +87,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Revit\Units\FormatOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Revit\Units\Units.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Revit\Units\UnitUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Revit\Utils\ElementIdExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Revit\Utils\ColorUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Revit\Utils\ConvexHull.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Revit\Utils\CurveUtils.cs" />

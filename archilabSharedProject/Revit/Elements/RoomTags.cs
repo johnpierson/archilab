@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes;
 using Revit.Elements;
+using archilab.Revit.Utils;
 using Revit.Elements.Views;
 
 // ReSharper disable UnusedMember.Global
@@ -97,7 +98,7 @@ namespace archilab.Revit.Elements
             if (!(roomTag?.InternalElement is Autodesk.Revit.DB.Architecture.RoomTag rt))
                 throw new ArgumentException(nameof(roomTag));
 
-            return rt.TaggedLocalRoomId.IntegerValue;
+            return rt.TaggedLocalRoomId.GetIdValue();
         }
     }
 }

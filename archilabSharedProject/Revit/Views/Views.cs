@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -9,6 +9,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Revit.Elements;
 using archilab.Revit.Elements;
+using archilab.Revit.Utils;
 using archilab.Utilities;
 using Autodesk.DesignScript.Runtime;
 using Revit.Elements.Views;
@@ -831,27 +832,27 @@ namespace archilab.Revit.Views
 
                 if (c.Name.ToLower().EndsWith(".dwg"))
                 {
-                    dwg.Add(Category.ById(c.Id.IntegerValue));
+                    dwg.Add(Category.ById(c.Id.GetIdValue()));
                     continue;
                 }
                 if (c.Name.ToLower().Contains(".rvt") || (linkedRevitCat != null && c.Id.Equals(linkedRevitCat.Id)))
                 {
-                    rvt.Add(Category.ById(c.Id.IntegerValue));
+                    rvt.Add(Category.ById(c.Id.GetIdValue()));
                     continue;
                 }
                 if (c.Name.ToLower().EndsWith(".dwf"))
                 {
-                    dwf.Add(Category.ById(c.Id.IntegerValue));
+                    dwf.Add(Category.ById(c.Id.GetIdValue()));
                     continue;
                 }
                 if (c.Name.ToLower().EndsWith(".dxf"))
                 {
-                    dxf.Add(Category.ById(c.Id.IntegerValue));
+                    dxf.Add(Category.ById(c.Id.GetIdValue()));
                     continue;
                 }
                 if (c.Name.ToLower().EndsWith(".dwfx"))
                 {
-                    dwfx.Add(Category.ById(c.Id.IntegerValue));
+                    dwfx.Add(Category.ById(c.Id.GetIdValue()));
                 }
             }
 
