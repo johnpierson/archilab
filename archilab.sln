@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "archilab2025", "archilab202
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "archilabUI2025", "archilabUI2025\archilabUI2025.csproj", "{7A01E833-F804-49D5-87DE-2D202811BB33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "archilab2026", "archilab2026\archilab2026.csproj", "{106DE2C5-5C5B-4DE3-9F91-FD68E1EE8F49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "archilabUI2026", "archilabUI2026\archilabUI2026.csproj", "{19041020-5B52-4750-9A0C-3BD0779A7A76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +107,14 @@ Global
 		{7A01E833-F804-49D5-87DE-2D202811BB33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A01E833-F804-49D5-87DE-2D202811BB33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A01E833-F804-49D5-87DE-2D202811BB33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{106DE2C5-5C5B-4DE3-9F91-FD68E1EE8F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{106DE2C5-5C5B-4DE3-9F91-FD68E1EE8F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{106DE2C5-5C5B-4DE3-9F91-FD68E1EE8F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{106DE2C5-5C5B-4DE3-9F91-FD68E1EE8F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19041020-5B52-4750-9A0C-3BD0779A7A76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19041020-5B52-4750-9A0C-3BD0779A7A76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19041020-5B52-4750-9A0C-3BD0779A7A76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19041020-5B52-4750-9A0C-3BD0779A7A76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,5 +139,7 @@ Global
 		archilabUISharedProject\archilabUISharedProject.projitems*{e155f7b0-4fff-4c6a-b21e-f4d184763bf1}*SharedItemsImports = 4
 		archilabSharedProject\archilabSharedProject.projitems*{e412996e-712b-4bcb-9925-9c594f317dac}*SharedItemsImports = 4
 		archilabSharedProject\archilabSharedProject.projitems*{e9c1b5e7-0481-409c-baf6-fd9f39c86e0e}*SharedItemsImports = 5
+		archilabSharedProject\archilabSharedProject.projitems*{106de2c5-5c5b-4de3-9f91-fd68e1ee8f49}*SharedItemsImports = 5
+		archilabUISharedProject\archilabUISharedProject.projitems*{19041020-5b52-4750-9a0c-3bd0779a7a76}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
