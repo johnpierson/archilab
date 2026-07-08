@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
@@ -7,6 +7,7 @@ using DSRevitNodesUI;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
+using archilab.Revit.Utils;
 
 namespace archilabUI.Utilities
 {
@@ -161,7 +162,7 @@ namespace archilabUI.Utilities
 
             // Select the element using the elementIds Integer Value
             var node = AstFactory.BuildFunctionCall("Revit.Elements.ElementSelector", "ByElementId",
-                new List<AssociativeNode> { AstFactory.BuildIntNode(id.IntegerValue) });
+                new List<AssociativeNode> { AstFactory.BuildIntNode(id.GetIdValue()) });
 
             // Return the selected element
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DSCore;
 using Dynamo.Graph.Nodes;
 using RevitServices.Persistence;
+using archilab.Revit.Utils;
 using archilab.Utilities;
 using Autodesk.DesignScript.Runtime;
 using Revit.Elements;
@@ -192,7 +193,7 @@ namespace archilab.Revit.Elements
             {
                 // (Konrad) Solid line pattern is hard coded and would not be allowed to be selected.
                 var linePatternId = InternalOverrideGraphicSettings.ProjectionLinePatternId;
-                if (linePatternId.IntegerValue == -3000010)
+                if (linePatternId.GetIdValue() == -3000010)
                     return "Solid";
 
                 return DocumentManager.Instance.CurrentDBDocument
@@ -290,7 +291,7 @@ namespace archilab.Revit.Elements
             {
                 // (Konrad) Solid line pattern is hard coded and would not be allowed to be selected.
                 var linePatternId = InternalOverrideGraphicSettings.CutLinePatternId;
-                if (linePatternId.IntegerValue == -3000010)
+                if (linePatternId.GetIdValue() == -3000010)
                     return "Solid";
 
                 return DocumentManager.Instance.CurrentDBDocument

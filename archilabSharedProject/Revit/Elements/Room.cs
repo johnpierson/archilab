@@ -1,4 +1,4 @@
-﻿using archilab.Revit.Utils;
+using archilab.Revit.Utils;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using DynamoServices;
@@ -373,7 +373,7 @@ namespace archilab.Revit.Elements
 
             Autodesk.Revit.DB.HostObject roof = null;
             var host = rWin?.Host;
-            if (host?.Category.Id.IntegerValue == (int)Autodesk.Revit.DB.BuiltInCategory.OST_Roofs)
+            if (host?.Category.Id.GetIdValue() == (int)Autodesk.Revit.DB.BuiltInCategory.OST_Roofs)
                 roof = host as Autodesk.Revit.DB.HostObject;
 
             Autodesk.Revit.DB.Face roofFace = null;
@@ -1323,7 +1323,7 @@ namespace archilab.Revit.Elements
                         var inserts = wall.FindInserts(true, false, true, true).Select(x => doc.GetElement(x));
                         foreach (var insert in inserts)
                         {
-                            if (insert.Category.Id.IntegerValue == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
+                            if (insert.Category.Id.GetIdValue() == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
                             {
                                 // (Konrad) We have a Window.
                                 var winPts = new List<Autodesk.Revit.DB.XYZ>();
@@ -1385,7 +1385,7 @@ namespace archilab.Revit.Elements
                         var inserts = roof.FindInserts(true, false, true, true).Select(x => doc.GetElement(x));
                         foreach (var insert in inserts)
                         {
-                            if (insert.Category.Id.IntegerValue == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
+                            if (insert.Category.Id.GetIdValue() == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
                             {
                                 // (Konrad) We have a Window.
                                 var winPts = new List<Autodesk.Revit.DB.XYZ>();
@@ -1515,7 +1515,7 @@ namespace archilab.Revit.Elements
             var inserts = wall.FindInserts(true, false, true, true).Select(doc.GetElement);
             foreach (var insert in inserts)
             {
-                if (insert.Category.Id.IntegerValue == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
+                if (insert.Category.Id.GetIdValue() == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
                 {
                     var winPts = GetGeometryPoints(insert);
                     if (!GetPointsOnFace(face, winPts, out var ptsOnFace, out var uvsOnFace)) continue;
@@ -2198,13 +2198,13 @@ namespace archilab.Revit.Elements
             UniqueId = w.UniqueId;
             IsPrimaryDesignOption = w.IsPrimaryDesignOption();
 
-            if (w.Category.Id.IntegerValue == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
+            if (w.Category.Id.GetIdValue() == Autodesk.Revit.DB.BuiltInCategory.OST_Windows.GetHashCode())
             {
                 ApertureType = ApertureTypes.Window;
                 Area = w.GetDoorWindowArea();
                 HasArea = true;
             }
-            else if (w.Category.Id.IntegerValue == Autodesk.Revit.DB.BuiltInCategory.OST_CurtainWallPanels.GetHashCode())
+            else if (w.Category.Id.GetIdValue() == Autodesk.Revit.DB.BuiltInCategory.OST_CurtainWallPanels.GetHashCode())
             {
                 ApertureType = ApertureTypes.CurtainWallPanel;
                 var areaParam = w.get_Parameter(Autodesk.Revit.DB.BuiltInParameter.HOST_AREA_COMPUTED);
@@ -2214,7 +2214,7 @@ namespace archilab.Revit.Elements
                     HasArea = true;
                 }
             }
-            else if (w.Category.Id.IntegerValue == Autodesk.Revit.DB.BuiltInCategory.OST_Doors.GetHashCode())
+            else if (w.Category.Id.GetIdValue() == Autodesk.Revit.DB.BuiltInCategory.OST_Doors.GetHashCode())
             {
                 ApertureType = ApertureTypes.Door;
                 Area = w.GetDoorWindowArea();

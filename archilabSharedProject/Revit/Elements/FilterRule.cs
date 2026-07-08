@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes;
@@ -93,9 +93,15 @@ namespace archilab.Revit.Elements
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateEqualsRule(elementId,
                                     Convert.ToDouble(parameterValue), 0.001));
                         case Autodesk.Revit.DB.StorageType.String:
+#if Revit2026
+                            return new FilterRule(
+                                Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateEqualsRule(elementId,
+                                    parameterValue.ToString()));
+#else
                             return new FilterRule(
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateEqualsRule(elementId,
                                     parameterValue.ToString(), true));
+#endif
                         case Autodesk.Revit.DB.StorageType.ElementId:
                             return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateEqualsRule(
                                 elementId, new Autodesk.Revit.DB.ElementId(((Element)parameterValue).Id)));
@@ -114,9 +120,15 @@ namespace archilab.Revit.Elements
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotEqualsRule(elementId,
                                     Convert.ToDouble(parameterValue), 0.001));
                         case Autodesk.Revit.DB.StorageType.String:
+#if Revit2026
+                            return new FilterRule(
+                                Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotEqualsRule(elementId,
+                                    parameterValue.ToString()));
+#else
                             return new FilterRule(
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotEqualsRule(elementId,
                                     parameterValue.ToString(), true));
+#endif
                         case Autodesk.Revit.DB.StorageType.ElementId:
                             return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotEqualsRule(
                                 elementId, new Autodesk.Revit.DB.ElementId(((Element)parameterValue).Id)));
@@ -135,9 +147,15 @@ namespace archilab.Revit.Elements
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterRule(elementId,
                                     Convert.ToDouble(parameterValue), 0.001));
                         case Autodesk.Revit.DB.StorageType.String:
+#if Revit2026
+                            return new FilterRule(
+                                Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterRule(elementId,
+                                    parameterValue.ToString()));
+#else
                             return new FilterRule(
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterRule(elementId,
                                     parameterValue.ToString(), true));
+#endif
                         case Autodesk.Revit.DB.StorageType.ElementId:
                             return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterRule(
                                 elementId, new Autodesk.Revit.DB.ElementId(((Element)parameterValue).Id)));
@@ -156,9 +174,15 @@ namespace archilab.Revit.Elements
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterOrEqualRule(elementId,
                                     Convert.ToDouble(parameterValue), 0.001));
                         case Autodesk.Revit.DB.StorageType.String:
+#if Revit2026
+                            return new FilterRule(
+                                Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterOrEqualRule(elementId,
+                                    parameterValue.ToString()));
+#else
                             return new FilterRule(
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterOrEqualRule(elementId,
                                     parameterValue.ToString(), true));
+#endif
                         case Autodesk.Revit.DB.StorageType.ElementId:
                             return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateGreaterOrEqualRule(
                                 elementId, new Autodesk.Revit.DB.ElementId(((Element)parameterValue).Id)));
@@ -181,9 +205,15 @@ namespace archilab.Revit.Elements
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateLessOrEqualRule(elementId,
                                     Convert.ToDouble(parameterValue), 0.001));
                         case Autodesk.Revit.DB.StorageType.String:
+#if Revit2026
+                            return new FilterRule(
+                                Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateLessOrEqualRule(elementId,
+                                    parameterValue.ToString()));
+#else
                             return new FilterRule(
                                 Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateLessOrEqualRule(elementId,
                                     parameterValue.ToString(), true));
+#endif
                         case Autodesk.Revit.DB.StorageType.ElementId:
                             return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateLessOrEqualRule(
                                 elementId, new Autodesk.Revit.DB.ElementId(((Element)parameterValue).Id)));
@@ -191,28 +221,63 @@ namespace archilab.Revit.Elements
                             return null;
                     }
                 case "contains":
+#if Revit2026
+                    return new FilterRule(
+                        Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateContainsRule(elementId,
+                            parameterValue.ToString()));
+#else
                     return new FilterRule(
                         Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateContainsRule(elementId,
                             parameterValue.ToString(), true));
+#endif
                 case "does not contain":
+#if Revit2026
+                    return new FilterRule(
+                        Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotContainsRule(elementId,
+                            parameterValue.ToString()));
+#else
                     return new FilterRule(
                         Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotContainsRule(elementId,
                             parameterValue.ToString(), true));
+#endif
                 case "begins with":
+#if Revit2026
+                    return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateBeginsWithRule(elementId,
+                        parameterValue.ToString()));
+#else
                     return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateBeginsWithRule(elementId,
                         parameterValue.ToString(), true));
+#endif
                 case "does not begin with":
+#if Revit2026
+                    return new FilterRule(
+                        Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotBeginsWithRule(elementId,
+                            parameterValue.ToString()));
+#else
                     return new FilterRule(
                         Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotBeginsWithRule(elementId,
                             parameterValue.ToString(), true));
+#endif
                 case "ends with":
+#if Revit2026
+                    return new FilterRule(
+                        Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateEndsWithRule(elementId,
+                            parameterValue.ToString()));
+#else
                     return new FilterRule(
                         Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateEndsWithRule(elementId,
                             parameterValue.ToString(), true));
+#endif
                 case "does not end with":
+#if Revit2026
+                    return new FilterRule(
+                        Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotEndsWithRule(elementId,
+                            parameterValue.ToString()));
+#else
                     return new FilterRule(
                         Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateNotEndsWithRule(elementId,
                             parameterValue.ToString(), true));
+#endif
 #if !Revit2019
                 case "has a value":
                     return new FilterRule(Autodesk.Revit.DB.ParameterFilterRuleFactory.CreateHasValueParameterRule(elementId));

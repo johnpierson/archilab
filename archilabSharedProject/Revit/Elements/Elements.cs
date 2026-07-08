@@ -1,4 +1,4 @@
-﻿using archilab.Revit.Utils;
+using archilab.Revit.Utils;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -306,13 +306,13 @@ namespace archilab.Revit.Elements
             switch (e)
             {
                 case Autodesk.Revit.DB.ViewSchedule vs:
-                    return Category.ById(vs.Definition.CategoryId.IntegerValue);
+                    return Category.ById(vs.Definition.CategoryId.GetIdValue());
                 case Autodesk.Revit.DB.Family f:
-                    return Category.ById(f.FamilyCategoryId.IntegerValue);
+                    return Category.ById(f.FamilyCategoryId.GetIdValue());
                 case Autodesk.Revit.DB.GraphicsStyle gs:
-                    return Category.ById(gs.GraphicsStyleCategory.Id.IntegerValue);
+                    return Category.ById(gs.GraphicsStyleCategory.Id.GetIdValue());
                 default:
-                    return Category.ById(e.Category.Id.IntegerValue);
+                    return Category.ById(e.Category.Id.GetIdValue());
             }
         }
 
@@ -343,7 +343,7 @@ namespace archilab.Revit.Elements
         [NodeCategory("Query")]
         public static int PhaseDemolished(Element element)
         {
-            return element.InternalElement.DemolishedPhaseId.IntegerValue;
+            return element.InternalElement.DemolishedPhaseId.GetIdValue();
         }
 
         /// <summary>

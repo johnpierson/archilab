@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using Autodesk.DesignScript.Runtime;
 using RevitServices.Persistence;
 using Revit.Elements;
+using archilab.Revit.Utils;
 // ReSharper disable UnusedMember.Global
 
 namespace archilab.Revit.Elements
@@ -40,15 +41,15 @@ namespace archilab.Revit.Elements
                     case Autodesk.Revit.DB.CategoryType.Invalid:
                         break;
                     case Autodesk.Revit.DB.CategoryType.Model:
-                        modelCats.Add(Category.ById(c.Id.IntegerValue));
+                        modelCats.Add(Category.ById(c.Id.GetIdValue()));
                         break;
                     case Autodesk.Revit.DB.CategoryType.Annotation:
-                        annotationCats.Add(Category.ById(c.Id.IntegerValue));
+                        annotationCats.Add(Category.ById(c.Id.GetIdValue()));
                         break;
                     case Autodesk.Revit.DB.CategoryType.Internal:
                         break;
                     case Autodesk.Revit.DB.CategoryType.AnalyticalModel:
-                        analyticalCats.Add(Category.ById(c.Id.IntegerValue));
+                        analyticalCats.Add(Category.ById(c.Id.GetIdValue()));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

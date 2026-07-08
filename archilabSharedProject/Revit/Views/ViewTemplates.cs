@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Revit.Elements;
+using archilab.Revit.Utils;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Revit.Elements.Views;
@@ -48,7 +49,7 @@ namespace archilab.Revit.Views
             var v = (Autodesk.Revit.DB.View)viewTemplate.InternalElement;
             if (!v.IsTemplate) throw new Exception("View has to be a View Template type.");
 
-            return v.GetTemplateParameterIds().Select(x => x.IntegerValue).ToList();
+            return v.GetTemplateParameterIds().Select(x => x.GetIdValue()).ToList();
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace archilab.Revit.Views
             var v = (Autodesk.Revit.DB.View)viewTemplate.InternalElement;
             if (!v.IsTemplate) throw new Exception("View has to be a View Template type.");
 
-            var nonControlled = new HashSet<int>(v.GetNonControlledTemplateParameterIds().Select(x => x.IntegerValue));
+            var nonControlled = new HashSet<int>(v.GetNonControlledTemplateParameterIds().Select(x => x.GetIdValue()));
             foreach (var p in parameters)
             {
                 if(include) nonControlled.Remove(p);
@@ -90,7 +91,7 @@ namespace archilab.Revit.Views
             var v = (Autodesk.Revit.DB.View)viewTemplate.InternalElement;
             if (!v.IsTemplate) throw new Exception("View has to be a View Template type.");
 
-            var nonControlled = new HashSet<int>(v.GetNonControlledTemplateParameterIds().Select(x => x.IntegerValue));
+            var nonControlled = new HashSet<int>(v.GetNonControlledTemplateParameterIds().Select(x => x.GetIdValue()));
             return !nonControlled.Contains(parameter);
         }
 
@@ -105,7 +106,7 @@ namespace archilab.Revit.Views
             var v = (Autodesk.Revit.DB.View)viewTemplate.InternalElement;
             if (!v.IsTemplate) throw new Exception("View has to be a View Template type.");
 
-            return v.GetNonControlledTemplateParameterIds().Select(x => x.IntegerValue).ToList();
+            return v.GetNonControlledTemplateParameterIds().Select(x => x.GetIdValue()).ToList();
         }
 
         /// <summary>
