@@ -12,17 +12,16 @@
 
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-	  <PackageReference Include="DynamoVisualProgramming.Core" Version="3.0.3.7597" />
-	  <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="3.0.3.7597" />
-	  <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="3.0.3.7597" />
-	  <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.0.3.7597" />
-	  <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.0.3.7597" />
+	  <PackageReference Include="DynamoVisualProgramming.Core" Version="3.6.2.11575" />
+	  <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="3.6.2.11575" />
+	  <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="3.6.2.11575" />
+	  <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.6.2.11575" />
+	  <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.6.2.11575" />
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
 	  <PackageReference Include="Prism" Version="4.1.0" />
 	  <PackageReference Include="RestSharp" Version="105.2.3" />
 	  <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2026.0.0" />
 	  <PackageReference Include="System.Buffers" Version="4.5.1" />
-	  <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
 	  <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
 	  <PackageReference Include="System.Memory" Version="4.5.4" />
 	  <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
@@ -35,13 +34,13 @@
 
 	<ItemGroup>
 	  <Reference Include="DSRevitNodesUI">
-	    <HintPath>..\_libs\3.0\DSRevitNodesUI.dll</HintPath>
+	    <HintPath>..\_libs\3.6\DSRevitNodesUI.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RevitNodes">
-	    <HintPath>..\_libs\3.0\RevitNodes.dll</HintPath>
+	    <HintPath>..\_libs\3.6\RevitNodes.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RevitServices">
-	    <HintPath>..\_libs\3.0\RevitServices.dll</HintPath>
+	    <HintPath>..\_libs\3.6\RevitServices.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
@@ -50,7 +49,7 @@
 	<!-- Local developer convenience: deploy straight into the Dynamo packages
 	     folder. Skipped on CI, which packages from the build output instead. -->
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CI)' != 'true'">
-	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Xceed.Wpf.Toolkit.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)CommunityToolkit.Mvvm.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.Drawing.Common.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Microsoft.Xaml.Behaviors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;" />
+	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Xceed.Wpf.Toolkit.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)CommunityToolkit.Mvvm.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.Drawing.Common.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Microsoft.Xaml.Behaviors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.6\packages\archi-lab.net\bin&quot;" />
 	</Target>
 
 </Project>
