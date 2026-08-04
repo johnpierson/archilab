@@ -1,5 +1,60 @@
 # archilab
+
+[![Build](https://github.com/ksobon/archilab/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/ksobon/archilab/actions/workflows/build.yml)
+
 This is the official Repository for archi-lab.net Dynamo Package.
+
+## Supported versions
+
+| Revit | Dynamo | Target framework |
+|-------|--------|------------------|
+| 2027  | 4.0    | net10.0-windows  |
+| 2026  | 3.6    | net8.0-windows   |
+| 2025  | 3.0    | net8.0-windows   |
+
+Revit 2024 and earlier are no longer supported. The last release supporting
+them is on the commit history prior to this change.
+
+## Building
+
+Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download) (it builds
+the net8.0 targets too) and Visual Studio 2022 or later for the IDE.
+
+```bash
+dotnet build archilabUI2027/archilabUI2027.csproj -c Release
+```
+
+Each version's UI project references its core project, so building the UI
+project builds both. Build `archilab.sln` from Visual Studio to build every
+Revit version at once — note that `dotnet build` does not reliably handle the
+shared projects (`.shproj`) the solution contains, so command-line builds
+should target an individual project.
+
+A successful local build deploys straight into
+`%AppData%\Dynamo\Dynamo Revit\<dynamo-version>\packages\archi-lab.net`, so
+the package is immediately available the next time Dynamo starts. Set
+`CI=true` to skip that step.
+
+### Project layout
+
+Shared source lives in two shared projects and is compiled into every Revit
+version:
+
+- `archilabSharedProject` — zero-touch nodes (`archilab<year>.dll`)
+- `archilabUISharedProject` — NodeModel/UI nodes (`archilabUI<year>.dll`)
+
+Where the Revit API differs between versions, code is guarded with cumulative
+symbols such as `REVIT2026_OR_GREATER`, which each version project defines for
+every release it satisfies. Adding a new Revit version means copying a project
+pair and defining its symbols — existing guarded code does not need to change
+unless that version introduces a new API break.
+
+## Releasing
+
+Push a `vX.Y.Z` tag. CI builds all three Revit versions, stamps the assembly
+version from the tag, and attaches one Dynamo package zip per version to a
+GitHub release. Uploading those zips to the Dynamo Package Manager is still
+done by hand — it has no publish API.
 
 # Support
 

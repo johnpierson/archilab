@@ -301,3 +301,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Release packages produced by scripts/package.ps1
+artifacts/
