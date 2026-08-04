@@ -25,7 +25,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="ClosedXML" Version="0.94.2" />
-	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
+	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" />
 	  <PackageReference Include="DynamoVisualProgramming.Core" Version="4.0.2.3852" />
 	  <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="4.0.2.3852" />
 	  <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="4.0.2.3852" />

@@ -1,8 +1,7 @@
-﻿using archilab.Revit.Geometry;
+using archilab.Revit.Geometry;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Dynamo.Graph.Nodes;
 using DynamoServices;
 using Revit.Elements;
