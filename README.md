@@ -6,11 +6,17 @@ This is the official Repository for archi-lab.net Dynamo Package.
 
 ## Supported versions
 
-| Revit | Dynamo | Target framework |
-|-------|--------|------------------|
-| 2027  | 4.0    | net10.0-windows  |
-| 2026  | 3.6    | net8.0-windows   |
-| 2025  | 3.0    | net8.0-windows   |
+| Revit | DynamoRevit | DynamoCore | Target framework |
+|-------|-------------|------------|------------------|
+| 2027  | 27.0        | 4.0        | net10.0-windows  |
+| 2026  | 3.6         | 3.6        | net8.0-windows   |
+| 2025  | 3.2         | 3.2        | net8.0-windows   |
+
+The two Dynamo columns differ from Revit 2027 onward, where DynamoRevit
+switched to year-based versioning. DynamoRevit is the one that matters for
+deployment: it names the `%AppData%\Dynamo\Dynamo Revit\<version>\packages`
+folder. DynamoCore is what the `DynamoVisualProgramming.*` packages track and
+what `pkg.json`'s `engine_version` refers to.
 
 Revit 2024 and earlier are no longer supported. The last release supporting
 them is on the commit history prior to this change.
@@ -51,10 +57,31 @@ unless that version introduces a new API break.
 
 ## Releasing
 
-Push a `vX.Y.Z` tag. CI builds all three Revit versions, stamps the assembly
-version from the tag, and attaches one Dynamo package zip per version to a
-GitHub release. Uploading those zips to the Dynamo Package Manager is still
-done by hand — it has no publish API.
+Push a tag naming the build number — `v13` — and CI builds all three Revit
+versions, stamps each assembly, and attaches one Dynamo package zip per
+version to a GitHub release. Uploading those zips to the Dynamo Package
+Manager is still done by hand; it has no publish API.
+
+### Version scheme
+
+    <LineMajor>.<LineMinor>.<Build><YY>
+
+    2027.400.1325   2027 line, Dynamo 4.0, build 13, for Revit '25
+    2027.400.1326                                    for Revit '26
+    2027.400.1327                                    for Revit '27
+
+`LineMajor`/`LineMinor` are the current release line — the newest supported
+Revit year and its DynamoCore version — and are shared by every package in a
+round. They live in `scripts/version.ps1` and are bumped when support for a
+newer Revit is added.
+
+The trailing two digits are the Revit version a given package targets. Every
+Revit version publishes under the one `archi-lab.net` package name, and the
+Package Manager rejects a version that moves backwards, so the target Revit
+year cannot be the major: publishing `2027.x` and later shipping a `2025.x`
+fix would be refused. Encoding it in the last two digits instead keeps a round
+ascending as it publishes 2025 → 2026 → 2027, and the next round's higher
+build number clears the whole previous round.
 
 # Support
 

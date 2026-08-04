@@ -23,11 +23,11 @@
 	<ItemGroup>
 	  <PackageReference Include="ClosedXML" Version="0.94.2" />
 	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
-	  <PackageReference Include="DynamoVisualProgramming.Core" Version="4.0.2.3870" />
-	  <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="4.0.2.3870" />
-	  <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="4.0.2.3870" />
-	  <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="4.0.2.3870" />
-	  <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="4.0.2.3870" />
+	  <PackageReference Include="DynamoVisualProgramming.Core" Version="4.0.2.3852" />
+	  <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="4.0.2.3852" />
+	  <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="4.0.2.3852" />
+	  <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="4.0.2.3852" />
+	  <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="4.0.2.3852" />
 	  <PackageReference Include="EPPlus" Version="4.5.3.1" />
 	  <PackageReference Include="ExcelNumberFormat" Version="1.0.7" />
 	  <PackageReference Include="Extended.Wpf.Toolkit" Version="3.0.0" />
@@ -51,13 +51,13 @@
 
 	<ItemGroup>
 	  <Reference Include="DSRevitNodesUI">
-	    <HintPath>..\_libs\4.0\DSRevitNodesUI.dll</HintPath>
+	    <HintPath>..\_libs\27.0\DSRevitNodesUI.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RevitNodes">
-	    <HintPath>..\_libs\4.0\RevitNodes.dll</HintPath>
+	    <HintPath>..\_libs\27.0\RevitNodes.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RevitServices">
-	    <HintPath>..\_libs\4.0\RevitServices.dll</HintPath>
+	    <HintPath>..\_libs\27.0\RevitServices.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
@@ -75,7 +75,7 @@
 	<!-- Local developer convenience: deploy straight into the Dynamo packages
 	     folder. Skipped on CI, which packages from the build output instead. -->
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CI)' != 'true'">
-	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\extra&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\extra&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)ClosedXML.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)DocumentFormat.OpenXml.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)EPPlus.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)ExcelNumberFormat.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)FastMember.Signed.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)HtmlAgilityPack.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)itextsharp.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)LumenWorks.Framework.IO.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)RestSharp.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.IO.Packaging.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)WeCantSpell.Hunspell.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)*.aff&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\extra&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)*.dic&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\extra&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)*.xml&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\4.0\packages\archi-lab.net\bin&quot;" />
+	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\extra&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\extra&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)ClosedXML.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)DocumentFormat.OpenXml.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)EPPlus.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)ExcelNumberFormat.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)FastMember.Signed.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)HtmlAgilityPack.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)itextsharp.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)LumenWorks.Framework.IO.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)RestSharp.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.IO.Packaging.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)WeCantSpell.Hunspell.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)*.aff&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\extra&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)*.dic&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\extra&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)*.xml&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;" />
 	</Target>
 
 </Project>
