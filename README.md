@@ -70,26 +70,18 @@ publish API.
 
 ### Version scheme
 
-    <major>.<YYDDD>.<YY>        frozen major . build date . target Revit
+    <year>.<day of year>.<target Revit>
 
-    2027.26216.25   built 2026 day 216 (Aug 4), for Revit 2025
-    2027.26216.26                                for Revit 2026
-    2027.26216.27                                for Revit 2027
+    2026.216.25   built 2026 day 216 (Aug 4), for Revit 2025
+    2026.216.26                                for Revit 2026
+    2026.216.27                                for Revit 2027
 
-Nothing has to be hand-incremented: the middle segment is the build date, so
-ordering falls out of the calendar, and the trailing Revit year keeps a single
-day's three packages distinct and ascending.
-
-The major is frozen at 2027 on purpose. All three Revit versions publish under
-the one `archi-lab.net` package name, and the Package Manager rejects a
-version that moves backwards — so if the major were the target Revit year,
-shipping a Revit 2025 fix after a 2027 release would be refused. A constant
-major removes that problem entirely; it only has to stay at or above the last
-published major.
-
-The date is `YYDDD` rather than `YYMMDD` because this same string is the
-assembly version, whose components are 16-bit: `26216` fits, `260804` does
-not. It stays monotonic and unambiguous through 2065.
+Every segment moves forwards on its own — the calendar year, then the day
+within it, then the Revit year within a single day's round. The Package
+Manager rejects a version that moves backwards and all three Revit versions
+publish under the one `archi-lab.net` package name, so that property is what
+makes a shared name workable, and it holds without anyone having to remember
+to increment anything.
 
 Two releases on the same day would collide. Pass an explicit date to
 `package.ps1 -Date`, or use the release workflow's date input, to stamp a
@@ -103,9 +95,9 @@ and Dynamo offers a user the newest version their engine satisfies:
 
 | Version | engine_version | Offered to |
 |---------|----------------|------------|
-| `2027.26216.25` | 3.2.1.5366 | Revit 2025 and newer |
-| `2027.26216.26` | 3.6.1.9895 | Revit 2026 and newer |
-| `2027.26216.27` | 4.0.2.3852 | Revit 2027 |
+| `2026.216.25` | 3.2.1.5366 | Revit 2025 and newer |
+| `2026.216.26` | 3.6.1.9895 | Revit 2026 and newer |
+| `2026.216.27` | 4.0.2.3852 | Revit 2027 |
 
 A Revit 2025 user is only compatible with the first, so that is what they get.
 A Revit 2027 user is compatible with all three and takes the newest. This

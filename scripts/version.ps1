@@ -15,40 +15,35 @@ $ArchilabTargets = @{
     2027 = @{ Dynamo = '27.0'; Engine = '4.0.2.3852'; Tfm = 'net10.0-windows' }
 }
 
-# Frozen. The Dynamo Package Manager refuses a version that moves backwards,
-# and every Revit version publishes under the single archi-lab.net package
-# name, so the major cannot encode anything that varies per release -- a
-# target Revit year in the major would make a 2025 fix unpublishable after a
-# 2027 release. Holding it constant removes that whole class of problem. It
-# only has to stay at or above the last published major (2025.300.1225).
-$ArchilabVersionMajor = 2027
-
 function Get-ArchilabVersion {
     <#
     .SYNOPSIS
         Builds the archi-lab.net package version for a Revit version.
 
     .DESCRIPTION
-        Format: <Major>.<YYDDD>.<YY>   frozen major . date . target Revit
+        Format: <year>.<day of year>.<target Revit YY>
 
-            2027.26216.25  =  built 2026 day 216 (Aug 4), for Revit '25
-            2027.26216.26  =  same build, for Revit '26
-            2027.26216.27  =  same build, for Revit '27
+            2026.216.25  =  built 2026 day 216 (Aug 4), for Revit 2025
+            2026.216.26  =  same build, for Revit 2026
+            2026.216.27  =  same build, for Revit 2027
 
-        The middle segment is the build date as a two-digit year followed by
-        the day of year. Ordering therefore comes from the date rather than a
-        counter anyone has to remember to increment, and the trailing Revit
-        year keeps a single day's three packages distinct and ascending.
+        Every segment moves forwards on its own: the calendar year, then the
+        day within it, then the Revit year within a single day's round. The
+        Dynamo Package Manager refuses a version that moves backwards, and all
+        three Revit versions publish under the one archi-lab.net package name,
+        so that property is what makes a shared name workable -- and it holds
+        without anyone having to remember to increment anything.
 
-        The date is YYDDD rather than YYMMDD because this string is also the
-        assembly version, whose components are 16-bit: 26216 fits, 260804 does
-        not. The encoding stays monotonic and unambiguous through 2065.
+        Each component is also a legal assembly version part (16-bit): the year
+        is well under 65534, the day of year never exceeds 366.
+
+        The day is not zero-padded, so that the string matches how .NET renders
+        the same value as an assembly version (2026.5.26, not 2026.005.26).
     #>
     param(
         [Parameter(Mandatory)][ValidateSet(2025, 2026, 2027)][int]$RevitYear,
         [datetime]$Date = (Get-Date)
     )
 
-    $stamp = '{0:D2}{1:D3}' -f ($Date.Year % 100), $Date.DayOfYear
-    "{0}.{1}.{2:D2}" -f $ArchilabVersionMajor, $stamp, ($RevitYear % 100)
+    "{0}.{1}.{2:D2}" -f $Date.Year, $Date.DayOfYear, ($RevitYear % 100)
 }
