@@ -1,16 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<RootNamespace>archilabUI</RootNamespace>
 		<UseWPF>true</UseWPF>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-		<GenerateDependencyFile>false</GenerateDependencyFile>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<Nullable>disable</Nullable>
-		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -54,7 +47,9 @@
 
 	<Import Project="..\archilabUISharedProject\archilabUISharedProject.projitems" Label="Shared" />
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<!-- Local developer convenience: deploy straight into the Dynamo packages
+	     folder. Skipped on CI, which packages from the build output instead. -->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CI)' != 'true'">
 	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Xceed.Wpf.Toolkit.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)CommunityToolkit.Mvvm.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.Drawing.Common.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Microsoft.Xaml.Behaviors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\3.0\packages\archi-lab.net\bin&quot;" />
 	</Target>
 
