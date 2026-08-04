@@ -49,11 +49,7 @@ jobs:
               Get-Date
           }
           "date=$($d.ToString('yyyy-MM-dd'))" >> $env:GITHUB_OUTPUT
-
-          . ./scripts/version.ps1
-          foreach ($y in 2025, 2026, 2027) {
-              Write-Host "Revit $y -> $(Get-ArchilabVersion -RevitYear $y -Date $d)"
-          }
+          Write-Host "Version date: $($d.ToString('yyyy-MM-dd'))"
 
       # One build round produces three packages, each with its own version.
       # The build derives the version from ArchilabBuildDate; packaging reads it
@@ -68,6 +64,8 @@ jobs:
               if ($LASTEXITCODE -ne 0) { throw "Build failed for Revit $y" }
           }
 
+      # Versions are reported from the built assemblies rather than recomputed,
+      # so what is logged is what actually shipped.
       - name: Package
         shell: pwsh
         run: |

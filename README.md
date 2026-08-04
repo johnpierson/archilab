@@ -38,32 +38,52 @@ year-based versioning. The distinction matters:
 
 ## Versioning
 
-Package versions are `<year>.<day of year>.<target Revit>`:
+Package versions are `<year>.<day of year>.<target ordinal>`:
 
 | Version | Meaning | For |
 |---------|---------|-----|
-| `2026.216.25` | built 2026, day 216 (Aug 4) | Revit 2025 |
-| `2026.216.26` | same build | Revit 2026 |
-| `2026.216.27` | same build | Revit 2027 |
+| `2026.216.250` | built 2026, day 216 (Aug 4) | Revit 2025 |
+| `2026.216.260` | same build | Revit 2026 |
+| `2026.216.270` | same build | Revit 2027 |
 
-One build round publishes all three. Nothing is hand-incremented — the version
-comes from the build date, and `scripts/version.ps1` is the single place it is
-defined.
+One build round publishes all three. Nothing is hand-incremented: the version
+is derived by the build from the date and the project's `ArchilabTargetOrdinal`
+(see `Directory.Build.targets`), and `scripts/package.ps1` reads it back off
+the compiled assembly rather than recomputing it. So the stamped assemblies,
+`pkg.json`, `node_libraries` and the zip name always carry the same number.
 
-**Why this shape.** All three Revit versions publish under the one
-`archi-lab.net` package name, and the Dynamo Package Manager refuses any
-version that moves backwards. This scheme satisfies that structurally: each
-segment only ever advances — the calendar year, then the day within it, then
-the Revit year within a single day's round. A scheme with the target Revit year
-as the major would not, since shipping a Revit 2025 fix after a 2027 release
-would move the major backwards and be rejected.
+**Why this shape.** All builds publish under the one `archi-lab.net` package
+name, and the Dynamo Package Manager refuses any version that moves backwards.
+This scheme satisfies that structurally — each segment only ever advances: the
+calendar year, then the day within it, then the target ordinal within a single
+day's round. A scheme with the target Revit year as the major would not, since
+shipping a Revit 2025 fix after a 2027 release would move the major backwards
+and be rejected.
 
-Each component is also a valid assembly version part, so the package version,
-the `node_libraries` entries in `pkg.json`, and the stamped assemblies all
-carry the same number.
+**Why an ordinal rather than just the Revit year.** The ordinal is the
+two-digit Revit year times ten, plus the Revit update within that year — so
+Revit 2027 is `270`. One Revit year can need more than one concurrent build:
+if a mid-cycle update such as Revit 2025.5 moved to a different .NET runtime,
+users on 2025.0 and on 2025.5 would each need their own package, and both are
+"Revit 2025". The ordinal keeps them distinct and correctly ordered:
 
-Two releases on the same day would collide. Pass `-Date` to `package.ps1`, or
-use the release workflow's date input, to stamp a different day.
+| Version | Target | Runtime | engine_version |
+|---------|--------|---------|----------------|
+| `2026.216.250` | Revit 2025.0–2025.4 | net8 | 3.2.1.5366 |
+| `2026.216.255` | Revit 2025.5+ | net10 | *its* Dynamo |
+| `2026.216.260` | Revit 2026 | net8 | 3.6.1.9895 |
+
+A user on Revit 2025.0 satisfies only `250` and gets it. A user on 2025.5
+satisfies both `250` and `255`, and takes the newer `255` — the right build for
+them. Adding such a target means a new project pair with its own ordinal, not
+an edit to an existing one.
+
+The ordinal tops out at `999` (Revit 2099.9), well inside the 16-bit limit on
+assembly version components.
+
+Two releases on the same day would collide. Pass
+`-p:ArchilabBuildDate=yyyy-MM-dd` to the build, or use the release workflow's
+date input, to stamp a different day.
 
 ### How one package serves three Revit versions
 
@@ -73,15 +93,15 @@ satisfies:
 
 | Version | engine_version | Offered to |
 |---------|----------------|------------|
-| `2026.216.25` | 3.2.1.5366 | Revit 2025 and newer |
-| `2026.216.26` | 3.6.1.9895 | Revit 2026 and newer |
-| `2026.216.27` | 4.0.2.3852 | Revit 2027 |
+| `2026.216.250` | 3.2.1.5366 | Revit 2025 and newer |
+| `2026.216.260` | 3.6.1.9895 | Revit 2026 and newer |
+| `2026.216.270` | 4.0.2.3852 | Revit 2027 |
 
 A Revit 2025 user satisfies only the first, so that is what they get. A Revit
 2027 user satisfies all three and takes the newest, which is the 2027 build.
 "Newest compatible" and "correct build for my Revit" resolve to the same
-version because the trailing Revit year rises in step with the engine
-requirement. Publish a round in 2025 → 2026 → 2027 order.
+version because the target ordinal rises in step with the engine requirement.
+Publish a round in ascending ordinal order.
 
 Note that `engine_version` is the exact Dynamo each project builds against, so
 a Revit install whose Dynamo predates it will not be offered the update. If
@@ -159,12 +179,13 @@ Revit 2027 support was added.
    `AddIns\DynamoForRevit` folder (`RevitNodes.dll`, `RevitServices.dll`, and
    `nodes\DSRevitNodesUI.dll`).
 2. Copy the newest project pair, updating the target framework, the Revit API
-   and Dynamo package versions, the `_libs` paths, the deploy folder, and the
-   `DefineConstants` (year symbol plus every `_OR_GREATER` it satisfies).
+   and Dynamo package versions, the `_libs` paths, the deploy folder, the
+   `DefineConstants` (year symbol plus every `_OR_GREATER` it satisfies), and
+   `ArchilabTargetOrdinal`.
 3. Add both projects to `archilab.sln`, including the
    `SharedMSBuildProjectFiles` entries.
 4. Add an entry to `$ArchilabTargets` in `scripts/version.ps1` and widen the
-   `ValidateSet` there and in `scripts/package.ps1`.
+   `ValidateSet` in `scripts/package.ps1`.
 5. Add the year to the matrix in `.github/workflows/build.yml` and the loops in
    `.github/workflows/release.yml`.
 6. Update the supported-versions table above.

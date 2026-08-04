@@ -4,6 +4,7 @@
 		<TargetFramework>net10.0-windows</TargetFramework>
 		<RootNamespace>archilabUI</RootNamespace>
 		<ArchilabRevitYear>2027</ArchilabRevitYear>
+		<ArchilabTargetOrdinal>270</ArchilabTargetOrdinal>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
@@ -48,9 +49,11 @@
 	<Import Project="..\archilabUISharedProject\archilabUISharedProject.projitems" Label="Shared" />
 
 	<!-- Local developer convenience: deploy straight into the Dynamo packages
-	     folder. Skipped on CI, which packages from the build output instead. -->
+	     folder. Skipped on CI, which packages from the build output instead.
+	     Non-fatal: Revit holds these assemblies open while it is running, so a
+	     locked file warns rather than failing the build. -->
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CI)' != 'true'">
-	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Xceed.Wpf.Toolkit.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)CommunityToolkit.Mvvm.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.Drawing.Common.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Microsoft.Xaml.Behaviors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;" />
+	  <Exec Command="if not exist &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot; mkdir &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetPath)&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Xceed.Wpf.Toolkit.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)CommunityToolkit.Mvvm.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)System.Drawing.Common.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;&#xD;&#xA;xcopy /Q/Y &quot;$(TargetDir)Microsoft.Xaml.Behaviors.dll&quot; &quot;%25AppData%25\Dynamo\Dynamo Revit\27.0\packages\archi-lab.net\bin&quot;" ContinueOnError="WarnAndContinue" />
 	</Target>
 
 	<!-- Drop a ready-to-install Dynamo package in dist\. Release only, so Debug
