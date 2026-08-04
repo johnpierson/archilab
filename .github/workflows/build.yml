@@ -21,9 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { revit: 2025, dynamo: '3.0' }
+          - { revit: 2025, dynamo: '3.2' }
           - { revit: 2026, dynamo: '3.6' }
-          - { revit: 2027, dynamo: '4.0' }
+          - { revit: 2027, dynamo: '27.0' }
 
     steps:
       - uses: actions/checkout@v4
