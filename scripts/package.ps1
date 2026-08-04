@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Stages a built archilab version as a Dynamo package and zips it.
 
@@ -24,7 +24,7 @@ param(
     [Parameter(Mandatory)][ValidateSet(2025, 2026, 2027)][int]$RevitYear,
     [datetime]$Date = (Get-Date),
     [string]$Configuration = 'Release',
-    [string]$OutDir = 'artifacts'
+    [string]$OutDir = 'dist'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -122,3 +122,4 @@ Remove-Item $stage -Recurse -Force
 
 $size = [math]::Round((Get-Item $zip).Length / 1MB, 2)
 Write-Host "Packaged Revit $RevitYear (Dynamo $($target.Dynamo)) -> $zip [$size MB]"
+

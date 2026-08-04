@@ -38,8 +38,14 @@ should target an individual project.
 
 A successful local build deploys straight into
 `%AppData%\Dynamo\Dynamo Revit\<dynamo-version>\packages\archi-lab.net`, so
-the package is immediately available the next time Dynamo starts. Set
-`CI=true` to skip that step.
+the package is immediately available the next time Dynamo starts.
+
+A **Release** build additionally drops a ready-to-install package zip in
+`dist/` — the same artifact CI attaches to a release, so it can be handed to
+someone for testing or installed by hand. Debug builds skip this to stay fast.
+`dist/` is not committed; it is rebuilt from source every time.
+
+Set `CI=true` to skip both steps.
 
 ### Project layout
 
