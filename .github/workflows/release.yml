@@ -2,12 +2,12 @@ name: Release
 
 on:
   push:
-    tags: ['v[0-9]*']
+    tags: ['v*']
   workflow_dispatch:
     inputs:
-      build:
-        description: 'Build number, e.g. 13 (dry run: uploads artifacts, creates no release)'
-        required: true
+      date:
+        description: 'Override the version datestamp as yyyy-MM-dd (blank = today). Dry run: uploads artifacts, creates no release.'
+        required: false
 
 permissions:
   contents: write
@@ -34,35 +34,37 @@ jobs:
           key: nuget-all-${{ hashFiles('**/*.csproj', 'nuget.config') }}
           restore-keys: nuget-all-
 
-      # The tag and the dispatch input reach the shell through env, never
-      # through expression interpolation -- a crafted tag would otherwise run
-      # as PowerShell before the format check could reject it.
-      - name: Determine build number
+      # The dispatch input reaches the shell through env, never through
+      # expression interpolation, so it cannot run as PowerShell before the
+      # format check rejects it.
+      - name: Determine version date
         id: ver
         shell: pwsh
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          REF_NAME: ${{ github.ref_name }}
-          INPUT_BUILD: ${{ inputs.build }}
+          INPUT_DATE: ${{ inputs.date }}
         run: |
-          $b = if ($env:EVENT_NAME -eq 'push') { $env:REF_NAME -replace '^v', '' } else { $env:INPUT_BUILD }
-          if ($b -notmatch '^\d{1,2}$' -or [int]$b -lt 1) { throw "Expected a build number 1-99, got '$b'" }
-          "build=$b" >> $env:GITHUB_OUTPUT
+          $d = if ($env:INPUT_DATE) {
+              [datetime]::ParseExact($env:INPUT_DATE, 'yyyy-MM-dd', $null)
+          } else {
+              Get-Date
+          }
+          "date=$($d.ToString('yyyy-MM-dd'))" >> $env:GITHUB_OUTPUT
 
           . ./scripts/version.ps1
           foreach ($y in 2025, 2026, 2027) {
-              Write-Host "Revit $y -> $(Get-ArchilabVersion -RevitYear $y -Build ([int]$b))"
+              Write-Host "Revit $y -> $(Get-ArchilabVersion -RevitYear $y -Date $d)"
           }
 
       # One build round produces three packages, each with its own version.
       - name: Build all Revit versions
         shell: pwsh
         env:
-          BUILD_NUMBER: ${{ steps.ver.outputs.build }}
+          VERSION_DATE: ${{ steps.ver.outputs.date }}
         run: |
           . ./scripts/version.ps1
+          $d = [datetime]$env:VERSION_DATE
           foreach ($y in 2025, 2026, 2027) {
-              $v = Get-ArchilabVersion -RevitYear $y -Build ([int]$env:BUILD_NUMBER)
+              $v = Get-ArchilabVersion -RevitYear $y -Date $d
               dotnet build "archilabUI$y/archilabUI$y.csproj" -c Release -p:Version=$v
               if ($LASTEXITCODE -ne 0) { throw "Build failed for Revit $y" }
           }
@@ -70,10 +72,10 @@ jobs:
       - name: Package
         shell: pwsh
         env:
-          BUILD_NUMBER: ${{ steps.ver.outputs.build }}
+          VERSION_DATE: ${{ steps.ver.outputs.date }}
         run: |
           foreach ($y in 2025, 2026, 2027) {
-              ./scripts/package.ps1 -RevitYear $y -Build ([int]$env:BUILD_NUMBER)
+              ./scripts/package.ps1 -RevitYear $y -Date ([datetime]$env:VERSION_DATE)
           }
 
       - uses: actions/upload-artifact@v4

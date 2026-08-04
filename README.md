@@ -57,31 +57,37 @@ unless that version introduces a new API break.
 
 ## Releasing
 
-Push a tag naming the build number — `v13` — and CI builds all three Revit
-versions, stamps each assembly, and attaches one Dynamo package zip per
-version to a GitHub release. Uploading those zips to the Dynamo Package
-Manager is still done by hand; it has no publish API.
+Push a tag and CI builds all three Revit versions, stamps each assembly, and
+attaches one Dynamo package zip per version to a GitHub release. Uploading
+those zips to the Dynamo Package Manager is still done by hand; it has no
+publish API.
 
 ### Version scheme
 
-    <LineMajor>.<LineMinor>.<Build><YY>
+    <major>.<YYDDD>.<YY>        frozen major . build date . target Revit
 
-    2027.400.1325   2027 line, Dynamo 4.0, build 13, for Revit '25
-    2027.400.1326                                    for Revit '26
-    2027.400.1327                                    for Revit '27
+    2027.26216.25   built 2026 day 216 (Aug 4), for Revit 2025
+    2027.26216.26                                for Revit 2026
+    2027.26216.27                                for Revit 2027
 
-`LineMajor`/`LineMinor` are the current release line — the newest supported
-Revit year and its DynamoCore version — and are shared by every package in a
-round. They live in `scripts/version.ps1` and are bumped when support for a
-newer Revit is added.
+Nothing has to be hand-incremented: the middle segment is the build date, so
+ordering falls out of the calendar, and the trailing Revit year keeps a single
+day's three packages distinct and ascending.
 
-The trailing two digits are the Revit version a given package targets. Every
-Revit version publishes under the one `archi-lab.net` package name, and the
-Package Manager rejects a version that moves backwards, so the target Revit
-year cannot be the major: publishing `2027.x` and later shipping a `2025.x`
-fix would be refused. Encoding it in the last two digits instead keeps a round
-ascending as it publishes 2025 → 2026 → 2027, and the next round's higher
-build number clears the whole previous round.
+The major is frozen at 2027 on purpose. All three Revit versions publish under
+the one `archi-lab.net` package name, and the Package Manager rejects a
+version that moves backwards — so if the major were the target Revit year,
+shipping a Revit 2025 fix after a 2027 release would be refused. A constant
+major removes that problem entirely; it only has to stay at or above the last
+published major.
+
+The date is `YYDDD` rather than `YYMMDD` because this same string is the
+assembly version, whose components are 16-bit: `26216` fits, `260804` does
+not. It stays monotonic and unambiguous through 2065.
+
+Two releases on the same day would collide. Pass an explicit date to
+`package.ps1 -Date`, or use the release workflow's date input, to stamp a
+different day.
 
 # Support
 

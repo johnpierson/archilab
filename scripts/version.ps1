@@ -15,19 +15,13 @@ $ArchilabTargets = @{
     2027 = @{ Dynamo = '27.0'; Engine = '4.0.2.3852'; Tfm = 'net10.0-windows' }
 }
 
-# The current release line: the newest supported Revit year, and the DynamoCore
-# major/minor it ships with, with the dot dropped (4.0 -> 400).
-#
-# This is deliberately ONE line shared by every Revit version in a release
-# round, rather than per-Revit values. The Dynamo Package Manager will not
-# accept a version that moves backwards, and all Revit versions publish under
-# the single archi-lab.net package name. If the major encoded the target Revit
-# year, then publishing 2027.x and later shipping a 2025.x fix would move the
-# major backwards and be rejected.
-#
-# Bump these when adding support for a newer Revit.
-$ArchilabLineMajor = 2027
-$ArchilabLineMinor = '400'
+# Frozen. The Dynamo Package Manager refuses a version that moves backwards,
+# and every Revit version publishes under the single archi-lab.net package
+# name, so the major cannot encode anything that varies per release -- a
+# target Revit year in the major would make a 2025 fix unpublishable after a
+# 2027 release. Holding it constant removes that whole class of problem. It
+# only has to stay at or above the last published major (2025.300.1225).
+$ArchilabVersionMajor = 2027
 
 function Get-ArchilabVersion {
     <#
@@ -35,25 +29,26 @@ function Get-ArchilabVersion {
         Builds the archi-lab.net package version for a Revit version.
 
     .DESCRIPTION
-        Format: <LineMajor>.<LineMinor>.<Build><YY>
+        Format: <Major>.<YYDDD>.<YY>   frozen major . date . target Revit
 
-            2027.400.1325  =  2027 line, Dynamo 4.0, build 13, for Revit '25
-            2027.400.1326  =  same round, same build, for Revit '26
-            2027.400.1327  =  same round, same build, for Revit '27
+            2027.26216.25  =  built 2026 day 216 (Aug 4), for Revit '25
+            2027.26216.26  =  same build, for Revit '26
+            2027.26216.27  =  same build, for Revit '27
 
-        The trailing two digits are the Revit version this package targets, and
-        are what keep the three packages built from one round distinct. Because
-        they ascend with the Revit year, publishing a round in 2025 -> 2026 ->
-        2027 order always moves the version forwards, and the next round's
-        higher build number clears every version of the previous round.
+        The middle segment is the build date as a two-digit year followed by
+        the day of year. Ordering therefore comes from the date rather than a
+        counter anyone has to remember to increment, and the trailing Revit
+        year keeps a single day's three packages distinct and ascending.
 
-        This matches the established scheme, where e.g. 2023.213.1722 was the
-        Revit 2022 build published under the 2023 line.
+        The date is YYDDD rather than YYMMDD because this string is also the
+        assembly version, whose components are 16-bit: 26216 fits, 260804 does
+        not. The encoding stays monotonic and unambiguous through 2065.
     #>
     param(
         [Parameter(Mandatory)][ValidateSet(2025, 2026, 2027)][int]$RevitYear,
-        [Parameter(Mandatory)][ValidateRange(1, 99)][int]$Build
+        [datetime]$Date = (Get-Date)
     )
 
-    "{0}.{1}.{2}{3:D2}" -f $ArchilabLineMajor, $ArchilabLineMinor, $Build, ($RevitYear % 100)
+    $stamp = '{0:D2}{1:D3}' -f ($Date.Year % 100), $Date.DayOfYear
+    "{0}.{1}.{2:D2}" -f $ArchilabVersionMajor, $stamp, ($RevitYear % 100)
 }

@@ -11,18 +11,18 @@
     also contains RevitAPI.dll, RevitAPIUI.dll, AdWindows.dll and the whole
     Dynamo assembly set, none of which may ship in a package.
 
-.PARAMETER Build
-    Release round number. The package version is derived from it as
-    <RevitYear>.<DynamoDigits>.<Build><YY> -- e.g. build 13 for Revit 2027
-    gives 2027.400.1327. See Get-ArchilabVersion below.
+.PARAMETER Date
+    Build date the version is stamped from; defaults to today. Override it
+    only to reproduce an earlier release. See Get-ArchilabVersion in
+    version.ps1 for the format.
 
 .EXAMPLE
-    ./scripts/package.ps1 -RevitYear 2027 -Build 13
+    ./scripts/package.ps1 -RevitYear 2027
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][ValidateSet(2025, 2026, 2027)][int]$RevitYear,
-    [Parameter(Mandatory)][ValidateRange(1, 99)][int]$Build,
+    [datetime]$Date = (Get-Date),
     [string]$Configuration = 'Release',
     [string]$OutDir = 'artifacts'
 )
@@ -32,7 +32,7 @@ $root = Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'version.ps1')
 
 $target = $ArchilabTargets[$RevitYear]
-$Version = Get-ArchilabVersion -RevitYear $RevitYear -Build $Build
+$Version = Get-ArchilabVersion -RevitYear $RevitYear -Date $Date
 
 $src = Join-Path $root "archilabUI$RevitYear\bin\$Configuration\$($target.Tfm)"
 if (-not (Test-Path $src)) {

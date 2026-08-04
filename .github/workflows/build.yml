@@ -56,4 +56,4 @@ jobs:
       # change breaks a PR rather than a release that has already been tagged.
       - name: Verify packaging
         shell: pwsh
-        run: ./scripts/package.ps1 -RevitYear ${{ matrix.revit }} -Build 1
+        run: ./scripts/package.ps1 -RevitYear ${{ matrix.revit }}
