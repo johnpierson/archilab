@@ -34,15 +34,18 @@ jobs:
           key: nuget-all-${{ hashFiles('**/*.csproj', 'nuget.config') }}
           restore-keys: nuget-all-
 
+      # Tag and input names reach the shell through env, never through
+      # expression interpolation -- a crafted tag would otherwise be executed
+      # as PowerShell before the format check could reject it.
       - name: Determine version
         id: ver
         shell: pwsh
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          $v = if ('${{ github.event_name }}' -eq 'push') {
-              '${{ github.ref_name }}'.TrimStart('v')
-          } else {
-              '${{ inputs.version }}'
-          }
+          $v = if ($env:EVENT_NAME -eq 'push') { $env:REF_NAME -replace '^v', '' } else { $env:INPUT_VERSION }
           if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Expected X.Y.Z, got '$v'" }
           "version=$v" >> $env:GITHUB_OUTPUT
           Write-Host "Building version $v"

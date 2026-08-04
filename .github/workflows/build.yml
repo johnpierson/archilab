@@ -50,3 +50,10 @@ jobs:
 
       - name: Build
         run: dotnet build archilabUI${{ matrix.revit }}/archilabUI${{ matrix.revit }}.csproj -c Release --no-restore
+
+      # package.ps1 keeps a hand-maintained allowlist and fails when an
+      # expected assembly is missing. Running it here means a dependency
+      # change breaks a PR rather than a release that has already been tagged.
+      - name: Verify packaging
+        shell: pwsh
+        run: ./scripts/package.ps1 -RevitYear ${{ matrix.revit }} -Version 0.0.0

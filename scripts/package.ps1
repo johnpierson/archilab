@@ -103,7 +103,15 @@ $pkg = $pkg -replace '\{\{VERSION\}\}', $Version `
             -replace '\{\{YEAR\}\}', $RevitYear `
             -replace '\{\{ENGINE_VERSION\}\}', $target.Engine `
             -replace '\{\{ASSEMBLY_VERSION\}\}', $assemblyVersion
-Set-Content (Join-Path $stage 'pkg.json') -Value $pkg -Encoding utf8
+
+if (-not ($pkg | ConvertFrom-Json).license) {
+    Write-Warning "pkg.template.json has no license set. The repository has no LICENSE file; set both before publishing."
+}
+
+# WriteAllText with an explicit BOM-less encoder: Set-Content -Encoding utf8
+# emits a BOM under Windows PowerShell 5.1, which trips strict JSON parsers.
+[System.IO.File]::WriteAllText(
+    (Join-Path $stage 'pkg.json'), $pkg, (New-Object System.Text.UTF8Encoding($false)))
 
 $zip = Join-Path $outPath "archi-lab.net_${Version}_Revit${RevitYear}_Dynamo$($target.Dynamo).zip"
 if (Test-Path $zip) { Remove-Item $zip -Force }
