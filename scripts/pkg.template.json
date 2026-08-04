@@ -7,7 +7,7 @@
   "group": "archi-lab",
   "keywords": ["archilab", "revit", "excel", "views", "sheets", "parameters", "rooms"],
   "dependencies": [],
-  "host_dependencies": [],
+  "host_dependencies": ["Revit"],
   "contents": "",
   "engine_version": "{{ENGINE_VERSION}}",
   "engine": "dynamo",

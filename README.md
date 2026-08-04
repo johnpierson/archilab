@@ -89,6 +89,29 @@ Two releases on the same day would collide. Pass an explicit date to
 `package.ps1 -Date`, or use the release workflow's date input, to stamp a
 different day.
 
+### How one package serves three Revit versions
+
+All three publish under the single `archi-lab.net` name. Each published
+version carries its own `engine_version` — the minimum Dynamo it requires —
+and Dynamo offers a user the newest version their engine satisfies:
+
+| Version | engine_version | Offered to |
+|---------|----------------|------------|
+| `2027.26216.25` | 3.2.1.5366 | Revit 2025 and newer |
+| `2027.26216.26` | 3.6.1.9895 | Revit 2026 and newer |
+| `2027.26216.27` | 4.0.2.3852 | Revit 2027 |
+
+A Revit 2025 user is only compatible with the first, so that is what they get.
+A Revit 2027 user is compatible with all three and takes the newest. This
+works because the trailing Revit year rises in step with the engine
+requirement, so "newest compatible" and "right build for my Revit" are always
+the same version. Publish a round in 2025 → 2026 → 2027 order.
+
+Note that `engine_version` is the exact Dynamo the package was built against,
+so a Revit version whose Dynamo predates it will not be offered the update —
+worth checking against the oldest Dynamo servicing each Revit release if wider
+reach matters more than binding to the newest API.
+
 # Support
 
 <p align="center">
