@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<RootNamespace>archilab</RootNamespace>
+		<ArchilabRevitYear>2025</ArchilabRevitYear>
 		<!-- Dynamo reads this XML for node tooltips; it must sit next to the
 		     assembly and share its name, which is the SDK default. -->
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>

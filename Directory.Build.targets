@@ -1,0 +1,17 @@
+<Project>
+
+	<!-- Package version: <year>.<day of year>.<target Revit>, e.g. 2026.216.27.
+	     See the Versioning section of README.md for why it is shaped this way.
+
+	     The build is the single source of this number: scripts/package.ps1 reads
+	     it back off the compiled assembly rather than recomputing it, so the
+	     stamped assembly, pkg.json and the zip name can never disagree.
+
+	     Imported after each project file so ArchilabRevitYear is already set.
+	     Override ArchilabBuildDate to reproduce an earlier release. -->
+	<PropertyGroup Condition="'$(ArchilabRevitYear)' != ''">
+		<ArchilabBuildDate Condition="'$(ArchilabBuildDate)' == ''">$([System.DateTime]::Now.ToString(yyyy-MM-dd))</ArchilabBuildDate>
+		<Version>$([System.DateTime]::Parse($(ArchilabBuildDate)).Year).$([System.DateTime]::Parse($(ArchilabBuildDate)).DayOfYear).$(ArchilabRevitYear.Substring(2))</Version>
+	</PropertyGroup>
+
+</Project>
