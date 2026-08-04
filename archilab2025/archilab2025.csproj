@@ -14,11 +14,7 @@
 		<DocumentationFile>bin\Debug\archilab2025.xml</DocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DefineConstants>$(DefineConstants);Revit2025</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<PropertyGroup>
 	  <DefineConstants>$(DefineConstants);Revit2025</DefineConstants>
 	</PropertyGroup>
 

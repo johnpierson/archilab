@@ -14,7 +14,7 @@ namespace archilab.Revit.Utils
         /// </summary>
         public static int GetIdValue(this ElementId id)
         {
-#if Revit2026
+#if REVIT2026_OR_GREATER
             return (int)id.Value;
 #else
             return id.IntegerValue;

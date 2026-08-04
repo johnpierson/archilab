@@ -13,12 +13,8 @@
 		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DefineConstants>$(DefineConstants);Revit2026</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <DefineConstants>$(DefineConstants);Revit2026</DefineConstants>
+	<PropertyGroup>
+	  <DefineConstants>$(DefineConstants);Revit2026;REVIT2026_OR_GREATER</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
