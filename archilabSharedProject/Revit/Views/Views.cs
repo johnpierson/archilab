@@ -908,7 +908,11 @@ namespace archilab.Revit.Views
                 case Autodesk.Revit.DB.ViewType.Report:
                 case Autodesk.Revit.DB.ViewType.CostReport:
                 case Autodesk.Revit.DB.ViewType.LoadsReport:
+#if REVIT2027_OR_GREATER
+                case Autodesk.Revit.DB.ViewType.PressureLossReport:
+#else
                 case Autodesk.Revit.DB.ViewType.PresureLossReport:
+#endif
                 case Autodesk.Revit.DB.ViewType.Walkthrough:
                 case Autodesk.Revit.DB.ViewType.Rendering:
 
