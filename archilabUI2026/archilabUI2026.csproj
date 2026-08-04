@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<RootNamespace>archilabUI</RootNamespace>
+		<AssemblyName>archilabUI</AssemblyName>
 		<ArchilabRevitYear>2026</ArchilabRevitYear>
 		<ArchilabTargetOrdinal>260</ArchilabTargetOrdinal>
 		<UseWPF>true</UseWPF>

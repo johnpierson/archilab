@@ -137,12 +137,22 @@ version:
 
 | Project | Produces | Contains |
 |---------|----------|----------|
-| `archilabSharedProject` | `archilab<year>.dll` | zero-touch nodes |
-| `archilabUISharedProject` | `archilabUI<year>.dll` | NodeModel / UI nodes |
+| `archilabSharedProject` | `archilab.dll` | zero-touch nodes |
+| `archilabUISharedProject` | `archilabUI.dll` | NodeModel / UI nodes |
 
 The per-year projects (`archilab2027`, `archilabUI2027`, …) hold no source of
 their own. They exist to pin a Revit API version, a Dynamo version and a target
 framework, and to define the compilation symbols below.
+
+**Assembly names carry no Revit version.** Every build produces `archilab.dll`
+and `archilabUI.dll`; which Revit a build is for is expressed by the package
+version and `engine_version`, not the file name. Dynamo records the assembly
+name in saved graphs, so version-stamped names meant a graph authored against
+`archilab2025.dll` would not resolve its nodes under Revit 2027. A single name
+makes graphs portable across Revit versions.
+
+The builds never collide, because each is installed into its own
+`Dynamo Revit\<version>\packages` folder.
 
 Also in the repo: `_libs/<dynamorevit-version>/` holds the Dynamo Revit
 assemblies, which are not published on NuGet and so are vendored from a Revit

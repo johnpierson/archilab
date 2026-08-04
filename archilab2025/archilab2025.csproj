@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<RootNamespace>archilab</RootNamespace>
+		<AssemblyName>archilab</AssemblyName>
 		<ArchilabRevitYear>2025</ArchilabRevitYear>
 		<ArchilabTargetOrdinal>250</ArchilabTargetOrdinal>
 		<!-- Dynamo reads this XML for node tooltips; it must sit next to the
@@ -17,7 +18,7 @@
 	<!-- Shared across every Revit version; the Link name sets the output file
 	     name, which Dynamo matches against the assembly name. -->
 	<ItemGroup>
-	  <Content Include="..\_resources\archilab_DynamoCustomization.xml" Link="archilab2025_DynamoCustomization.xml">
+	  <Content Include="..\_resources\archilab_DynamoCustomization.xml" Link="archilab_DynamoCustomization.xml">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>

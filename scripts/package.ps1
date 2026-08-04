@@ -36,14 +36,14 @@ if (-not (Test-Path $src)) {
 # the stamped binaries, pkg.json and the zip name cannot drift apart. The
 # build derives it in Directory.Build.targets; pass -p:ArchilabBuildDate there
 # to reproduce an earlier release.
-$assemblyVersion = (Get-Item (Join-Path $src "archilab$RevitYear.dll")).VersionInfo.FileVersion
+$assemblyVersion = (Get-Item (Join-Path $src 'archilab.dll')).VersionInfo.FileVersion
 $Version = ([version]$assemblyVersion).ToString(3)
 
 # Ship these. A missing one is a packaging bug, so fail rather than ship a
 # package that loads with pieces silently absent.
 $required = @(
-    "archilab$RevitYear"
-    "archilabUI$RevitYear"
+    'archilab'
+    'archilabUI'
     'ClosedXML'
     'CommunityToolkit.Mvvm'
     'DocumentFormat.OpenXml'
@@ -90,18 +90,17 @@ if ($skipped) { Write-Host "  note: not in build output, skipped: $($skipped -jo
 
 # XML docs drive Dynamo's node tooltips; the customization file maps
 # namespaces to library categories. Both must sit alongside the assemblies.
-foreach ($name in @("archilab$RevitYear", "archilabUI$RevitYear")) {
+foreach ($name in @('archilab', 'archilabUI')) {
     $xml = Join-Path $src "$name.xml"
     if (Test-Path $xml) { Copy-Item $xml $binDir }
 }
-Copy-Item (Join-Path $src "archilab${RevitYear}_DynamoCustomization.xml") $binDir
+Copy-Item (Join-Path $src 'archilab_DynamoCustomization.xml') $binDir
 
 # Hunspell dictionaries for the spell-check nodes.
 Copy-Item (Join-Path $src 'en_US.aff'), (Join-Path $src 'en_US.dic') (Join-Path $stage 'extra')
 
 $pkg = Get-Content (Join-Path $PSScriptRoot 'pkg.template.json') -Raw
 $pkg = $pkg -replace '\{\{VERSION\}\}', $Version `
-            -replace '\{\{YEAR\}\}', $RevitYear `
             -replace '\{\{ENGINE_VERSION\}\}', $target.Engine `
             -replace '\{\{ASSEMBLY_VERSION\}\}', $assemblyVersion
 

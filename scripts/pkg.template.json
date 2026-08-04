@@ -16,7 +16,7 @@
   "repository_url": "https://github.com/ksobon/archilab",
   "contains_binaries": true,
   "node_libraries": [
-    "archilab{{YEAR}}, Version={{ASSEMBLY_VERSION}}, Culture=neutral, PublicKeyToken=null",
-    "archilabUI{{YEAR}}, Version={{ASSEMBLY_VERSION}}, Culture=neutral, PublicKeyToken=null"
+    "archilab, Version={{ASSEMBLY_VERSION}}, Culture=neutral, PublicKeyToken=null",
+    "archilabUI, Version={{ASSEMBLY_VERSION}}, Culture=neutral, PublicKeyToken=null"
   ]
 }
