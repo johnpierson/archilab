@@ -106,8 +106,13 @@ $pkg = $pkg -replace '\{\{VERSION\}\}', $Version `
             -replace '\{\{ENGINE_VERSION\}\}', $target.Engine `
             -replace '\{\{ASSEMBLY_VERSION\}\}', $assemblyVersion
 
-if (-not ($pkg | ConvertFrom-Json).license) {
-    Write-Warning "pkg.template.json has no license set. The repository has no LICENSE file; set both before publishing."
+# Every package published carries this license, so make sure the claim is
+# actually backed by a LICENSE file in the repository.
+$license = ($pkg | ConvertFrom-Json).license
+if (-not $license) {
+    Write-Warning "pkg.template.json has no license set; every published package will claim none."
+} elseif (-not (Test-Path (Join-Path $root 'LICENSE'))) {
+    Write-Warning "pkg.template.json claims the $license license but the repository has no LICENSE file."
 }
 
 # WriteAllText with an explicit BOM-less encoder: Set-Content -Encoding utf8

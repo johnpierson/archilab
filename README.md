@@ -110,6 +110,10 @@ so a Revit version whose Dynamo predates it will not be offered the update —
 worth checking against the oldest Dynamo servicing each Revit release if wider
 reach matters more than binding to the newest API.
 
+# License
+
+MIT — see [LICENSE](LICENSE).
+
 # Support
 
 <p align="center">
