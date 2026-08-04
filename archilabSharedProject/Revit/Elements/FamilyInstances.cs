@@ -14,8 +14,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using Element = Revit.Elements.Element;
 using FamilyInstance = Autodesk.Revit.DB.FamilyInstance;
 using FamilyType = Revit.Elements.FamilyType;

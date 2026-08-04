@@ -7,7 +7,7 @@ namespace archilab.Revit.Utils
     /// Extension methods for ElementId to support both IntegerValue (pre-2026) and Value (2026+).
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    internal static class ElementIdExtensions
+    public static class ElementIdExtensions
     {
         /// <summary>
         /// Returns the integer value of the ElementId. Uses Value in Revit 2026+, IntegerValue otherwise.
