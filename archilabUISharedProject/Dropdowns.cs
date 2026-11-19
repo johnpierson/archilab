@@ -665,13 +665,21 @@ namespace archilabUI
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
             Items.Clear();
-            var cat = Autodesk.Revit.DB.Category.GetCategory(DocumentManager.Instance.CurrentDBDocument, BuiltInCategory.OST_Lines);
-            var gsCat = cat.GetGraphicsStyle(GraphicsStyleType.Projection).GraphicsStyleCategory.SubCategories;
 
+            // (Fixes #109) Any of these lookups can return null (no active document, no Lines
+            // category, or a sub-category without a projection style). An exception thrown here
+            // happens while the node is being constructed, which takes Dynamo down with it.
             var lineStyles = new List<GraphicsStyle>();
-            foreach (Category c in gsCat)
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+            var cat = doc == null ? null : Autodesk.Revit.DB.Category.GetCategory(doc, BuiltInCategory.OST_Lines);
+            if (cat?.SubCategories != null)
             {
-                lineStyles.Add(c.GetGraphicsStyle(GraphicsStyleType.Projection));
+                foreach (Category c in cat.SubCategories)
+                {
+                    var style = c?.GetGraphicsStyle(GraphicsStyleType.Projection);
+                    if (style != null && !string.IsNullOrEmpty(style.Name))
+                        lineStyles.Add(style);
+                }
             }
 
             if (lineStyles.Count == 0)
