@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.Graph.Nodes;
 using Revit.Elements;
 using RevitServices.Persistence;
+using archilab.Revit.Utils;
 // ReSharper disable UnusedMember.Global
 
 namespace archilab.Revit.Elements
@@ -35,49 +36,14 @@ namespace archilab.Revit.Elements
         [NodeCategory("Action")]
         public static FilterRule CreateRule(List<Category> categories, string parameterName, string ruleType, object parameterValue)
         {
-            if (!categories.All(x => ParameterExists(x, parameterName)))
-                throw new Exception("Parameter with given name doesn't exist for all Categories.");
-
-            var bic = (Autodesk.Revit.DB.BuiltInCategory)Enum.ToObject(typeof(Autodesk.Revit.DB.BuiltInCategory),
-                categories.First().Id);
             var doc = DocumentManager.Instance.CurrentDBDocument;
-            var elementInstance = new Autodesk.Revit.DB.FilteredElementCollector(doc)
-                .OfCategory(bic)
-                .WhereElementIsNotElementType()
-                .FirstElement();
-            var elementType = new Autodesk.Revit.DB.FilteredElementCollector(doc)
-                .OfCategory(bic)
-                .WhereElementIsElementType()
-                .FirstElement();
+            var catIds = categories.Select(x => new Autodesk.Revit.DB.ElementId(x.Id)).ToList();
 
-            Autodesk.Revit.DB.ElementId elementId;
-            Autodesk.Revit.DB.StorageType storageType;
-
-            if (Enum.TryParse<Autodesk.Revit.DB.BuiltInParameter>(parameterName, out var bip))
-            {
-                if (elementInstance.get_Parameter(bip) != null)
-                {
-                    elementId = new Autodesk.Revit.DB.ElementId(bip);
-                    storageType = elementInstance.get_Parameter(bip).StorageType;
-                }
-                else
-                {
-                    elementId = new Autodesk.Revit.DB.ElementId(bip);
-                    storageType = elementType.get_Parameter(bip).StorageType;
-                }
-            }
-            else if (elementInstance.LookupParameter(parameterName) != null)
-            {
-                var parameter = elementInstance.LookupParameter(parameterName);
-                elementId = parameter.Id;
-                storageType = parameter.StorageType;
-            }
-            else
-            {
-                var parameter = elementType.LookupParameter(parameterName);
-                elementId = parameter.Id;
-                storageType = parameter.StorageType;
-            }
+            // (Fixes #87) Resolve the parameter from the categories' filterable parameters instead of
+            // sampling an element of the first category, so rules can be built before any elements
+            // of those categories exist in the model (project templates, container models).
+            if (!TryResolveParameter(doc, catIds, parameterName, out var elementId, out var storageType))
+                throw new Exception("Parameter with given name doesn't exist for all Categories.");
 
             switch (ruleType)
             {
@@ -291,32 +257,88 @@ namespace archilab.Revit.Elements
 
 #region Utilities
 
-        private static bool ParameterExists(Category category, string parameterName)
+        private static bool TryResolveParameter(Autodesk.Revit.DB.Document doc,
+            ICollection<Autodesk.Revit.DB.ElementId> catIds, string parameterName,
+            out Autodesk.Revit.DB.ElementId parameterId, out Autodesk.Revit.DB.StorageType storageType)
         {
-            var bic = (Autodesk.Revit.DB.BuiltInCategory)Enum.ToObject(typeof(Autodesk.Revit.DB.BuiltInCategory), category.Id);
-            var doc = DocumentManager.Instance.CurrentDBDocument;
-            var elementInstance = new Autodesk.Revit.DB.FilteredElementCollector(doc)
-                .OfCategory(bic)
-                .WhereElementIsNotElementType()
-                .FirstElement();
-            var elementType = new Autodesk.Revit.DB.FilteredElementCollector(doc)
-                .OfCategory(bic)
-                .WhereElementIsElementType()
-                .FirstElement();
-            var flag = false;
+            parameterId = Autodesk.Revit.DB.ElementId.InvalidElementId;
+            storageType = Autodesk.Revit.DB.StorageType.None;
+
+            var filterable = Autodesk.Revit.DB.ParameterFilterUtilities.GetFilterableParametersInCommon(doc, catIds);
+            if (filterable == null || filterable.Count == 0) return false;
 
             if (Enum.TryParse<Autodesk.Revit.DB.BuiltInParameter>(parameterName, out var bip))
             {
-                if (elementInstance.get_Parameter(bip) != null)
-                    flag = true;
-                else if (elementType.get_Parameter(bip) != null)
-                    flag = true;
+                var bipId = new Autodesk.Revit.DB.ElementId(bip);
+                if (!filterable.Contains(bipId)) return false;
+
+                parameterId = bipId;
+                storageType = doc.get_TypeOfStorage(bip);
+                return true;
             }
-            else if (elementInstance.LookupParameter(parameterName) != null)
-                flag = true;
-            else if (elementType.LookupParameter(parameterName) != null)
-                flag = true;
-            return flag;
+
+            // Match project/shared parameters by name first, then built-in parameters by their label.
+            foreach (var id in filterable)
+            {
+                if (!(doc.GetElement(id) is Autodesk.Revit.DB.ParameterElement pe) || pe.Name != parameterName)
+                    continue;
+
+                parameterId = id;
+                storageType = GetStorageType(pe);
+                return true;
+            }
+
+            foreach (var id in filterable)
+            {
+                if (doc.GetElement(id) is Autodesk.Revit.DB.ParameterElement) continue;
+
+                var builtIn = (Autodesk.Revit.DB.BuiltInParameter)id.GetIdValue();
+                string label;
+                try { label = Autodesk.Revit.DB.LabelUtils.GetLabelFor(builtIn); }
+                catch { continue; }
+                if (label != parameterName) continue;
+
+                parameterId = id;
+                storageType = doc.get_TypeOfStorage(builtIn);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static Autodesk.Revit.DB.StorageType GetStorageType(Autodesk.Revit.DB.ParameterElement pe)
+        {
+            var definition = pe.GetDefinition();
+#if Revit2019 || Revit2020 || Revit2021
+            switch (definition.ParameterType)
+            {
+                case Autodesk.Revit.DB.ParameterType.Text:
+                case Autodesk.Revit.DB.ParameterType.URL:
+                    return Autodesk.Revit.DB.StorageType.String;
+                case Autodesk.Revit.DB.ParameterType.YesNo:
+                case Autodesk.Revit.DB.ParameterType.Integer:
+                    return Autodesk.Revit.DB.StorageType.Integer;
+                case Autodesk.Revit.DB.ParameterType.Material:
+                case Autodesk.Revit.DB.ParameterType.FamilyType:
+                case Autodesk.Revit.DB.ParameterType.Image:
+                    return Autodesk.Revit.DB.StorageType.ElementId;
+                default:
+                    return Autodesk.Revit.DB.StorageType.Double;
+            }
+#else
+            var dataType = definition.GetDataType();
+            if (dataType == Autodesk.Revit.DB.SpecTypeId.String.Text ||
+                dataType == Autodesk.Revit.DB.SpecTypeId.String.Url)
+                return Autodesk.Revit.DB.StorageType.String;
+            if (dataType == Autodesk.Revit.DB.SpecTypeId.Boolean.YesNo ||
+                dataType == Autodesk.Revit.DB.SpecTypeId.Int.Integer)
+                return Autodesk.Revit.DB.StorageType.Integer;
+            if (Autodesk.Revit.DB.Category.IsBuiltInCategory(dataType) ||
+                dataType == Autodesk.Revit.DB.SpecTypeId.Reference.Material ||
+                dataType == Autodesk.Revit.DB.SpecTypeId.Reference.Image)
+                return Autodesk.Revit.DB.StorageType.ElementId;
+            return Autodesk.Revit.DB.StorageType.Double;
+#endif
         }
 
 #endregion
